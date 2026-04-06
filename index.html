@@ -1,0 +1,2283 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOGOS — The Art of Fallacy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400;1,600&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --slate: #2c3140;
+    --slate-dark: #1a1e28;
+    --slate-mid: #363d52;
+    --slate-light: #4a5268;
+    --brass: #b8953a;
+    --brass-light: #d4ad52;
+    --brass-dark: #8a6e25;
+    --brass-pale: #e8d08a;
+    --cream: #f0e8d0;
+    --cream-dark: #d9cdb0;
+    --ivory: #faf6ec;
+    --red-err: #c0392b;
+    --green-ok: #27693a;
+    --shadow: 0 4px 24px rgba(0,0,0,0.5);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+    --border: 1px solid rgba(184,149,58,0.3);
+    --border-strong: 2px solid var(--brass);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--slate-dark);
+    color: var(--cream);
+    font-family: 'Crimson Text', serif;
+    font-size: 17px;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(184,149,58,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(184,149,58,0.04) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23b8953a' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* ── HEADER ── */
+  .game-header {
+    background: linear-gradient(180deg, rgba(26,30,40,0.98) 0%, rgba(44,49,64,0.95) 100%);
+    border-bottom: 2px solid var(--brass-dark);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.6);
+  }
+
+  .header-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .header-icon {
+    font-size: 2rem;
+    filter: drop-shadow(0 0 8px rgba(184,149,58,0.5));
+  }
+
+  .header-title h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--brass-light);
+    letter-spacing: 0.12em;
+    text-shadow: 0 0 20px rgba(184,149,58,0.3);
+  }
+
+  .header-title .subtitle {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.78rem;
+    color: var(--brass-dark);
+    letter-spacing: 0.08em;
+    display: block;
+    margin-top: -2px;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .score-display {
+    text-align: right;
+  }
+
+  .score-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--brass-dark);
+    text-transform: uppercase;
+  }
+
+  .score-value {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--brass-light);
+  }
+
+  .rank-badge {
+    background: linear-gradient(135deg, var(--brass-dark), var(--brass));
+    color: var(--slate-dark);
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 2px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .game-container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 24px 16px;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ── WELCOME SCREEN ── */
+  .welcome-hero {
+    text-align: center;
+    padding: 40px 20px 30px;
+  }
+
+  .welcome-hero .owl-icon {
+    font-size: 5rem;
+    display: block;
+    margin-bottom: 16px;
+    filter: drop-shadow(0 0 16px rgba(184,149,58,0.6));
+    animation: float 4s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .welcome-hero h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 2.4rem;
+    font-weight: 900;
+    color: var(--brass-light);
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+    text-shadow: 0 0 30px rgba(184,149,58,0.4);
+  }
+
+  .welcome-hero .tagline {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    color: var(--cream-dark);
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+    color: var(--brass-dark);
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--brass-dark), transparent);
+  }
+
+  .player-setup {
+    background: rgba(44,49,64,0.8);
+    border: var(--border);
+    border-radius: 4px;
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+
+  .player-setup h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    color: var(--brass);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .player-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    align-items: center;
+  }
+
+  .player-num {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    color: var(--brass-dark);
+    width: 60px;
+    letter-spacing: 0.1em;
+  }
+
+  .player-input {
+    flex: 1;
+    background: rgba(26,30,40,0.8);
+    border: var(--border);
+    border-radius: 3px;
+    color: var(--cream);
+    font-family: 'Crimson Text', serif;
+    font-size: 1rem;
+    padding: 8px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .player-input:focus {
+    border-color: var(--brass);
+  }
+
+  .player-input::placeholder { color: var(--slate-light); }
+
+  .timer-toggle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: var(--border);
+  }
+
+  .toggle-label {
+    font-family: 'Crimson Text', serif;
+    font-size: 0.95rem;
+    color: var(--cream-dark);
+    flex: 1;
+  }
+
+  .toggle-label small {
+    display: block;
+    color: var(--brass-dark);
+    font-size: 0.8rem;
+    font-style: italic;
+  }
+
+  .toggle-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .toggle-switch input { opacity: 0; width: 0; height: 0; }
+
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--slate-light);
+    border-radius: 24px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 18px; height: 18px;
+    left: 3px; top: 3px;
+    background: var(--cream);
+    border-radius: 50%;
+    transition: 0.3s;
+  }
+
+  .toggle-switch input:checked + .toggle-slider { background: var(--brass); }
+  .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+  .btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 12px 28px;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--brass-dark), var(--brass-light));
+    color: var(--slate-dark);
+    box-shadow: 0 4px 16px rgba(184,149,58,0.3);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(184,149,58,0.5);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--brass);
+    border: 1px solid var(--brass-dark);
+  }
+
+  .btn-secondary:hover {
+    background: rgba(184,149,58,0.1);
+  }
+
+  .btn-sm {
+    font-size: 0.72rem;
+    padding: 7px 16px;
+  }
+
+  /* ── HOW TO PLAY ── */
+  .how-to-play {
+    background: rgba(26,30,40,0.6);
+    border: var(--border);
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+
+  .how-to-play h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    color: var(--brass);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .tier-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .tier-item {
+    background: rgba(44,49,64,0.6);
+    border: var(--border);
+    border-radius: 3px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+
+  .tier-pts {
+    font-family: 'Cinzel', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--brass-light);
+    display: block;
+  }
+
+  .tier-name {
+    font-size: 0.8rem;
+    color: var(--cream-dark);
+    display: block;
+    margin-top: 4px;
+  }
+
+  .tier-desc {
+    font-size: 0.72rem;
+    color: var(--slate-light);
+    font-style: italic;
+    margin-top: 4px;
+    display: block;
+  }
+
+  /* ── LEADERBOARD ── */
+  .leaderboard-panel {
+    background: rgba(26,30,40,0.7);
+    border: var(--border);
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+  }
+
+  .leaderboard-panel h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    color: var(--brass);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+
+  .lb-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(184,149,58,0.1);
+  }
+
+  .lb-rank { font-family: 'Cinzel', serif; color: var(--brass-dark); font-size: 0.8rem; width: 28px; }
+  .lb-name { flex: 1; padding-left: 12px; }
+  .lb-score { font-family: 'Cinzel', serif; color: var(--brass-light); font-weight: 700; }
+  .lb-badge { font-size: 0.7rem; color: var(--slate-light); font-style: italic; margin-left: 8px; }
+
+  /* ── GAME SCREEN ── */
+  .game-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .players-scores {
+    display: flex;
+    gap: 16px;
+  }
+
+  .player-score-card {
+    background: rgba(44,49,64,0.7);
+    border: var(--border);
+    border-radius: 3px;
+    padding: 10px 16px;
+    text-align: center;
+    min-width: 90px;
+    transition: all 0.3s;
+  }
+
+  .player-score-card.active-player {
+    border-color: var(--brass);
+    background: rgba(184,149,58,0.12);
+    box-shadow: 0 0 16px rgba(184,149,58,0.2);
+  }
+
+  .ps-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--brass-dark);
+    text-transform: uppercase;
+  }
+
+  .ps-score {
+    font-family: 'Cinzel', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--brass-light);
+  }
+
+  .progress-info {
+    text-align: right;
+  }
+
+  .progress-text {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--brass-dark);
+    text-transform: uppercase;
+  }
+
+  .timer-display {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--brass-light);
+    text-align: right;
+  }
+
+  .timer-display.urgent { color: var(--red-err); animation: pulse 0.5s ease-in-out infinite; }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  /* ── EXCERPT CARD ── */
+  .excerpt-card {
+    background: linear-gradient(135deg, rgba(44,49,64,0.9), rgba(36,42,58,0.95));
+    border: var(--border-strong);
+    border-radius: 4px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    position: relative;
+    box-shadow: var(--shadow);
+  }
+
+  .excerpt-card::before {
+    content: '❝';
+    position: absolute;
+    top: 12px;
+    left: 16px;
+    font-size: 3rem;
+    color: rgba(184,149,58,0.15);
+    font-family: serif;
+    line-height: 1;
+  }
+
+  .excerpt-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--brass-dark);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .excerpt-text {
+    font-family: 'IM Fell English', serif;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--ivory);
+    padding-left: 12px;
+    border-left: 2px solid rgba(184,149,58,0.3);
+  }
+
+  /* ── TIER PROGRESS ── */
+  .tier-progress {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+
+  .tier-step {
+    flex: 1;
+    height: 4px;
+    background: rgba(184,149,58,0.15);
+    border-radius: 2px;
+    position: relative;
+    overflow: visible;
+  }
+
+  .tier-step.completed { background: var(--brass); }
+  .tier-step.current { background: linear-gradient(90deg, var(--brass), rgba(184,149,58,0.3)); }
+
+  .tier-step-label {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Cinzel', serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.1em;
+    color: var(--brass-dark);
+    white-space: nowrap;
+    text-transform: uppercase;
+  }
+
+  .tier-pts-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    color: var(--brass);
+    white-space: nowrap;
+  }
+
+  /* ── QUESTION AREA ── */
+  .question-area {
+    margin-top: 32px;
+  }
+
+  .question-prompt {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--brass);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  /* ── CATEGORY GRID ── */
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .category-btn {
+    background: rgba(44,49,64,0.8);
+    border: var(--border);
+    border-radius: 3px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .category-btn:hover {
+    border-color: var(--brass);
+    background: rgba(184,149,58,0.1);
+    transform: translateY(-1px);
+  }
+
+  .category-btn.correct {
+    border-color: var(--green-ok);
+    background: rgba(39,105,58,0.2);
+    animation: correctFlash 0.5s ease;
+  }
+
+  .category-btn.wrong {
+    border-color: var(--red-err);
+    background: rgba(192,57,43,0.15);
+    animation: wrongShake 0.4s ease;
+  }
+
+  @keyframes correctFlash {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); }
+  }
+
+  @keyframes wrongShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+  .cat-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+
+  .cat-text { flex: 1; }
+
+  .cat-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--cream);
+    display: block;
+    margin-bottom: 3px;
+  }
+
+  .cat-desc {
+    font-size: 0.78rem;
+    color: var(--slate-light);
+    font-style: italic;
+    line-height: 1.3;
+  }
+
+  /* ── FALLACY LIST ── */
+  .fallacy-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .fallacy-btn {
+    background: rgba(44,49,64,0.8);
+    border: var(--border);
+    border-radius: 3px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+
+  .fallacy-btn:hover {
+    border-color: var(--brass);
+    background: rgba(184,149,58,0.1);
+  }
+
+  .fallacy-btn.correct {
+    border-color: var(--green-ok);
+    background: rgba(39,105,58,0.2);
+  }
+
+  .fallacy-btn.wrong {
+    border-color: var(--red-err);
+    background: rgba(192,57,43,0.15);
+  }
+
+  .fallacy-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--cream);
+    display: block;
+  }
+
+  .fallacy-latin {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.72rem;
+    color: var(--brass-dark);
+    display: block;
+    margin-top: 2px;
+  }
+
+  .fallacy-brief {
+    font-size: 0.72rem;
+    color: var(--slate-light);
+    margin-top: 4px;
+    line-height: 1.3;
+  }
+
+  /* ── EXPLANATION AREA ── */
+  .explanation-area {
+    background: rgba(26,30,40,0.8);
+    border: var(--border);
+    border-radius: 3px;
+    padding: 20px;
+  }
+
+  .explanation-prompt {
+    font-family: 'Crimson Text', serif;
+    font-size: 0.95rem;
+    color: var(--cream-dark);
+    font-style: italic;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+
+  .explanation-textarea {
+    width: 100%;
+    min-height: 120px;
+    background: rgba(26,30,40,0.9);
+    border: var(--border);
+    border-radius: 3px;
+    color: var(--cream);
+    font-family: 'Crimson Text', serif;
+    font-size: 1rem;
+    padding: 12px;
+    resize: vertical;
+    outline: none;
+    line-height: 1.6;
+  }
+
+  .explanation-textarea:focus { border-color: var(--brass); }
+
+  .grading-mode-indicator {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    margin-bottom: 10px;
+    display: inline-block;
+  }
+
+  .mode-lenient { background: rgba(39,105,58,0.3); color: #6abf83; border: 1px solid rgba(39,105,58,0.5); }
+  .mode-strict { background: rgba(192,57,43,0.3); color: #e8806e; border: 1px solid rgba(192,57,43,0.5); }
+  .mode-partial { background: rgba(184,149,58,0.2); color: var(--brass-light); border: 1px solid var(--brass-dark); }
+
+  /* ── FEEDBACK BOX ── */
+  .feedback-box {
+    margin-top: 16px;
+    padding: 16px 20px;
+    border-radius: 3px;
+    border-left: 4px solid;
+    font-family: 'Crimson Text', serif;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .feedback-box.correct { border-color: var(--green-ok); background: rgba(39,105,58,0.15); }
+  .feedback-box.wrong { border-color: var(--red-err); background: rgba(192,57,43,0.12); }
+  .feedback-box.partial { border-color: var(--brass); background: rgba(184,149,58,0.1); }
+
+  .feedback-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .feedback-box.correct .feedback-title { color: #6abf83; }
+  .feedback-box.wrong .feedback-title { color: #e8806e; }
+  .feedback-box.partial .feedback-title { color: var(--brass-light); }
+
+  /* ── POINTS ANIMATION ── */
+  .points-popup {
+    position: fixed;
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--brass-light);
+    text-shadow: 0 0 20px rgba(184,149,58,0.8);
+    pointer-events: none;
+    z-index: 999;
+    animation: pointsFloat 1.5s ease-out forwards;
+  }
+
+  @keyframes pointsFloat {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-80px) scale(1.3); }
+  }
+
+  /* ── CELEBRATION ── */
+  .celebration-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .celebration-card {
+    background: linear-gradient(135deg, var(--slate-dark), var(--slate-mid));
+    border: 2px solid var(--brass);
+    border-radius: 6px;
+    padding: 40px 48px;
+    text-align: center;
+    max-width: 420px;
+    box-shadow: 0 0 60px rgba(184,149,58,0.3), var(--shadow);
+    animation: scaleIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  @keyframes scaleIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .celebration-icon { font-size: 3.5rem; margin-bottom: 12px; display: block; }
+
+  .celebration-card h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.5rem;
+    color: var(--brass-light);
+    margin-bottom: 8px;
+  }
+
+  .celebration-card p {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    color: var(--cream-dark);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .confetti-container {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 499;
+    overflow: hidden;
+  }
+
+  .confetti-piece {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    top: -10px;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* ── RECAP SCREEN ── */
+  .recap-header {
+    text-align: center;
+    padding: 30px 20px 20px;
+  }
+
+  .recap-header h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--brass-light);
+    margin-bottom: 8px;
+  }
+
+  .final-scores {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
+
+  .final-score-card {
+    background: rgba(44,49,64,0.8);
+    border: var(--border);
+    border-radius: 4px;
+    padding: 16px 24px;
+    text-align: center;
+    min-width: 120px;
+  }
+
+  .final-score-card.winner {
+    border-color: var(--brass);
+    background: rgba(184,149,58,0.15);
+  }
+
+  .fsc-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--brass-dark);
+    text-transform: uppercase;
+  }
+
+  .fsc-score {
+    font-family: 'Cinzel', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--brass-light);
+  }
+
+  .fsc-rank {
+    font-size: 0.78rem;
+    color: var(--cream-dark);
+    font-style: italic;
+  }
+
+  .recap-rounds {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .recap-round {
+    background: rgba(44,49,64,0.6);
+    border: var(--border);
+    border-radius: 4px;
+    padding: 20px 24px;
+  }
+
+  .recap-round-num {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--brass-dark);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .recap-excerpt {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: var(--cream-dark);
+    border-left: 2px solid rgba(184,149,58,0.2);
+    padding-left: 12px;
+    margin-bottom: 14px;
+    line-height: 1.6;
+  }
+
+  .recap-answers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .recap-answer {
+    background: rgba(26,30,40,0.6);
+    border-radius: 3px;
+    padding: 10px 12px;
+    border-left: 3px solid;
+  }
+
+  .recap-answer.got-it { border-color: var(--green-ok); }
+  .recap-answer.missed { border-color: var(--red-err); }
+  .recap-answer.partial { border-color: var(--brass); }
+
+  .recap-answer-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    color: var(--brass-dark);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .recap-answer-val {
+    font-size: 0.82rem;
+    color: var(--cream);
+    line-height: 1.4;
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-card {
+    background: var(--slate-mid);
+    border: var(--border-strong);
+    border-radius: 4px;
+    padding: 28px 32px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow);
+  }
+
+  .modal-card h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: var(--brass-light);
+    margin-bottom: 6px;
+  }
+
+  .modal-card .modal-latin {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    color: var(--brass-dark);
+    font-size: 0.9rem;
+    margin-bottom: 14px;
+  }
+
+  .modal-card p {
+    font-family: 'Crimson Text', serif;
+    color: var(--cream-dark);
+    line-height: 1.7;
+    margin-bottom: 10px;
+  }
+
+  .modal-close {
+    float: right;
+    font-size: 1.3rem;
+    color: var(--brass-dark);
+    cursor: pointer;
+    background: none;
+    border: none;
+    line-height: 1;
+    margin-top: -4px;
+  }
+
+  .modal-close:hover { color: var(--brass-light); }
+
+  /* ── STREAK ── */
+  .streak-bar {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .streak-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--slate-light);
+    transition: background 0.3s;
+  }
+
+  .streak-dot.filled { background: var(--brass); }
+  .streak-dot.miss { background: var(--red-err); }
+
+  .loading-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+    color: var(--brass-dark);
+    font-size: 0.9rem;
+    margin-top: 12px;
+  }
+
+  .loading-dots span {
+    display: inline-block;
+    width: 5px; height: 5px;
+    background: var(--brass);
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: dotBounce 1.2s infinite;
+  }
+
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes dotBounce {
+    0%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-8px); }
+  }
+
+  /* ── RANK MODAL ── */
+  .ranks-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .rank-item {
+    background: rgba(26,30,40,0.6);
+    border: var(--border);
+    border-radius: 3px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .rank-item .rank-icon { font-size: 1.3rem; }
+
+  .rank-item .rank-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    color: var(--cream);
+    display: block;
+  }
+
+  .rank-item .rank-pts {
+    font-size: 0.68rem;
+    color: var(--brass-dark);
+  }
+
+  @media (max-width: 600px) {
+    .category-grid, .fallacy-grid { grid-template-columns: 1fr; }
+    .tier-list { grid-template-columns: 1fr; }
+    .recap-answers { grid-template-columns: 1fr; }
+    .ranks-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="game-header">
+  <div class="header-title">
+    <span class="header-icon">🦉</span>
+    <div>
+      <h1>LOGOS</h1>
+      <span class="subtitle">The Art of Fallacy — An Academic Challenge</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="score-display" id="headerScore" style="display:none">
+      <div class="score-label">Score</div>
+      <div class="score-value" id="headerScoreVal">0</div>
+    </div>
+    <button class="rank-badge" id="rankBadgeBtn" onclick="showRanksModal()" style="display:none">🏛️ Novice</button>
+  </div>
+</header>
+
+<!-- CONFETTI -->
+<div class="confetti-container" id="confettiContainer"></div>
+
+<!-- MODAL OVERLAY -->
+<div class="modal-overlay" id="modalOverlay" style="display:none" onclick="closeModal(event)">
+  <div class="modal-card" id="modalCard">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- CELEBRATION OVERLAY -->
+<div class="celebration-overlay" id="celebrationOverlay" style="display:none">
+  <div class="celebration-card">
+    <span class="celebration-icon" id="celebIcon">🏛️</span>
+    <h2 id="celebTitle">Well Reasoned!</h2>
+    <p id="celebMessage">You identified the category correctly.</p>
+    <button class="btn btn-primary" onclick="closeCelebration()">Continue →</button>
+  </div>
+</div>
+
+<!-- RANKS MODAL -->
+<div class="modal-overlay" id="ranksOverlay" style="display:none" onclick="closeRanksModal(event)">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeRanksModal()">✕</button>
+    <h3>Academic Ranks</h3>
+    <p style="font-size:0.85rem; color:var(--brass-dark); font-style:italic; margin-bottom:4px;">Your standing in the Academy of Logos</p>
+    <div class="ranks-grid" id="ranksGrid"></div>
+  </div>
+</div>
+
+<div class="game-container">
+
+  <!-- ══════════ WELCOME SCREEN ══════════ -->
+  <div class="screen active" id="screenWelcome">
+    <div class="welcome-hero">
+      <span class="owl-icon">🦉</span>
+      <h2>LOGOS</h2>
+      <p class="tagline">Master the art of reasoned discourse — identify fallacies as Aristotle would</p>
+    </div>
+
+    <div class="how-to-play">
+      <h3>⚖️ The Three Tiers of Mastery</h3>
+      <div class="tier-list">
+        <div class="tier-item">
+          <span class="tier-pts">5 pts</span>
+          <span class="tier-name">I. Genus</span>
+          <span class="tier-desc">Identify the category of fallacy</span>
+        </div>
+        <div class="tier-item">
+          <span class="tier-pts">10 pts</span>
+          <span class="tier-name">II. Species</span>
+          <span class="tier-desc">Name the specific fallacy</span>
+        </div>
+        <div class="tier-item">
+          <span class="tier-pts">20 pts</span>
+          <span class="tier-name">III. Logos</span>
+          <span class="tier-desc">Explain the error in writing</span>
+        </div>
+      </div>
+      <div style="margin-top:14px; font-size:0.82rem; color:var(--slate-light); font-style:italic;">
+        ✦ Enable the timer for +10 bonus points per tier · Three misses on a tier returns you to easier difficulty
+      </div>
+    </div>
+
+    <div class="player-setup">
+      <h3>🏛️ Enroll in the Academy</h3>
+      <div class="player-row">
+        <span class="player-num">Scholar I</span>
+        <input class="player-input" id="player1Name" type="text" placeholder="Enter your name..." maxlength="20">
+      </div>
+      <div class="player-row">
+        <span class="player-num">Scholar II</span>
+        <input class="player-input" id="player2Name" type="text" placeholder="Optional second scholar..." maxlength="20">
+      </div>
+      <div class="player-row">
+        <span class="player-num">Scholar III</span>
+        <input class="player-input" id="player3Name" type="text" placeholder="Optional third scholar..." maxlength="20">
+      </div>
+      <div class="timer-toggle">
+        <div class="toggle-label">
+          Engage the Hourglass
+          <small>+10 points per tier if answered within 30 seconds</small>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="timerToggle">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="leaderboard-panel" id="leaderboardPanel">
+      <h3>📜 Hall of Scholars</h3>
+      <div id="leaderboardList"><em style="color:var(--slate-light); font-size:0.85rem;">No entries yet — be the first to earn your place.</em></div>
+    </div>
+
+    <div style="text-align:center; margin-top:8px;">
+      <button class="btn btn-primary" onclick="startGame()" style="font-size:1rem; padding:14px 40px;">
+        Begin the Examination ⚖️
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════ GAME SCREEN ══════════ -->
+  <div class="screen" id="screenGame">
+
+    <div class="game-top-bar">
+      <div class="players-scores" id="playersScores"></div>
+      <div class="progress-info">
+        <div class="progress-text" id="progressText">Round 1 of 12</div>
+        <div class="timer-display" id="timerDisplay" style="display:none">0:30</div>
+      </div>
+    </div>
+
+    <!-- Streak dots -->
+    <div class="streak-bar" id="streakBar"></div>
+
+    <!-- Excerpt -->
+    <div class="excerpt-card">
+      <div class="excerpt-label">A critic of the restored gospel argues:</div>
+      <div class="excerpt-text" id="excerptText">Loading...</div>
+    </div>
+
+    <!-- Tier progress bar -->
+    <div class="tier-progress">
+      <div class="tier-step" id="tierStep1">
+        <span class="tier-step-label">I. Genus — 5pts</span>
+      </div>
+      <div class="tier-step" id="tierStep2">
+        <span class="tier-step-label">II. Species — 10pts</span>
+      </div>
+      <div class="tier-step" id="tierStep3">
+        <span class="tier-step-label">III. Logos — 20pts</span>
+      </div>
+      <div class="tier-pts-label" id="timerBonus" style="display:none">+10🕐</div>
+    </div>
+
+    <!-- Question area -->
+    <div class="question-area" id="questionArea"></div>
+
+    <!-- Next round button (hidden until tier 3 done) -->
+    <div style="text-align:right; margin-top:16px;">
+      <button class="btn btn-secondary btn-sm" id="nextRoundBtn" onclick="nextRound()" style="display:none">
+        Next Round →
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════ RECAP SCREEN ══════════ -->
+  <div class="screen" id="screenRecap">
+    <div class="recap-header">
+      <span style="font-size:3rem;">📜</span>
+      <h2>Examination Complete</h2>
+      <p style="font-family:'IM Fell English',serif; font-style:italic; color:var(--cream-dark);">
+        Here is a record of your reasoning — may it serve your future scholarship.
+      </p>
+    </div>
+
+    <div class="final-scores" id="finalScores"></div>
+
+    <div style="text-align:center; margin: 16px 0 24px;">
+      <button class="btn btn-primary" onclick="goHome()">Study Again ⚖️</button>
+    </div>
+
+    <div class="recap-rounds" id="recapRounds"></div>
+
+    <div style="text-align:center; margin-top:24px;">
+      <button class="btn btn-secondary" onclick="goHome()">Return to the Academy</button>
+    </div>
+  </div>
+
+</div><!-- /game-container -->
+
+<script>
+// ══════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════
+
+const CATEGORIES = [
+  {
+    id: 'appeal',
+    icon: '📣',
+    name: 'Appeals & Manipulation',
+    desc: 'Arguments that bypass reason by appealing to emotion, authority, or crowd',
+    fallacies: [
+      { id: 'ad_populum', name: 'Ad Populum', latin: 'Argumentum ad Populum', brief: 'Appeal to popular belief — "everyone thinks so, therefore it\'s true"' },
+      { id: 'ad_verecundiam', name: 'Appeal to Authority', latin: 'Argumentum ad Verecundiam', brief: 'Using an authority\'s opinion as proof without further evidence' },
+      { id: 'appeal_emotion', name: 'Appeal to Emotion', latin: 'Argumentum ad Passiones', brief: 'Using emotional pressure rather than logical reasoning' },
+      { id: 'ad_hominem', name: 'Ad Hominem', latin: 'Argumentum ad Hominem', brief: 'Attacking the person rather than their argument' },
+    ]
+  },
+  {
+    id: 'causal',
+    icon: '🔗',
+    name: 'Causal Fallacies',
+    desc: 'Errors in reasoning about cause and effect relationships',
+    fallacies: [
+      { id: 'post_hoc', name: 'Post Hoc', latin: 'Post hoc ergo propter hoc', brief: 'Assuming that because B followed A, A caused B' },
+      { id: 'false_cause', name: 'False Cause', latin: 'Non causa pro causa', brief: 'Identifying a cause incorrectly; correlation mistaken for causation' },
+      { id: 'slippery_slope', name: 'Slippery Slope', latin: 'Argumentum ad Consequentiam', brief: 'Claiming one event will inevitably lead to extreme consequences' },
+    ]
+  },
+  {
+    id: 'structural',
+    icon: '🏗️',
+    name: 'Structural Fallacies',
+    desc: 'Flaws in the logical form or structure of the argument itself',
+    fallacies: [
+      { id: 'false_dilemma', name: 'False Dilemma', latin: 'Bifurcatio', brief: 'Presenting only two options when more exist' },
+      { id: 'begging_question', name: 'Begging the Question', latin: 'Petitio Principii', brief: 'Assuming the conclusion within the premise' },
+      { id: 'circular', name: 'Circular Reasoning', latin: 'Circulus in Demonstrando', brief: 'The premise and conclusion are essentially the same claim' },
+    ]
+  },
+  {
+    id: 'genetic',
+    icon: '🧬',
+    name: 'Genetic & Source Fallacies',
+    desc: 'Judging claims based on origin rather than merit',
+    fallacies: [
+      { id: 'genetic', name: 'Genetic Fallacy', latin: 'Argumentum ad Originem', brief: 'Dismissing a claim because of its source or origin' },
+      { id: 'tu_quoque', name: 'Tu Quoque', latin: 'Tu quoque', brief: '"You too" — deflecting critique by pointing to the accuser\'s flaws' },
+      { id: 'poisoning_well', name: 'Poisoning the Well', latin: 'Praeposterus', brief: 'Preemptively discrediting a source to prevent fair hearing' },
+    ]
+  },
+  {
+    id: 'scope',
+    icon: '🔭',
+    name: 'Scope & Quantity Fallacies',
+    desc: 'Errors in generalizing or applying evidence too broadly or narrowly',
+    fallacies: [
+      { id: 'hasty_generalization', name: 'Hasty Generalization', latin: 'Conclucio ex paucis', brief: 'Drawing a broad conclusion from too few examples' },
+      { id: 'cherry_picking', name: 'Cherry Picking', latin: 'Suppression of evidence', brief: 'Selectively presenting only evidence that supports one\'s conclusion' },
+      { id: 'anecdotal', name: 'Anecdotal Evidence', latin: 'Argumentum ad Exemplum', brief: 'Substituting personal stories for systematic evidence' },
+    ]
+  },
+  {
+    id: 'language',
+    icon: '📖',
+    name: 'Language & Definition Fallacies',
+    desc: 'Exploiting ambiguity, shifting meanings, or misdirection in language',
+    fallacies: [
+      { id: 'equivocation', name: 'Equivocation', latin: 'Aequivocatio', brief: 'Using the same word with different meanings within one argument' },
+      { id: 'straw_man', name: 'Straw Man', latin: 'Homo de stipula', brief: 'Misrepresenting an opposing position to make it easier to attack' },
+      { id: 'red_herring', name: 'Red Herring', latin: 'Ignoratio Elenchi', brief: 'Introducing an irrelevant topic to divert attention' },
+    ]
+  }
+];
+
+const EXCERPTS = [
+  {
+    text: "The Book of Mormon anachronistically references horses, chariots, wheat, barley, steel, and other items. Since these things did not exist in pre-Columbian America, the Book of Mormon must be a 19th-century fabrication. We have extensive archaeological records from Mesoamerica, and they confirm the absence of these items. This alone proves that Joseph Smith invented the text.",
+    category: 'structural',
+    fallacy: 'false_dilemma',
+    explanation: "The argument assumes only two possibilities — ancient record or fabrication — dismissing scholarship exploring nuanced definitions, possible extinct species, or alternative readings of the text."
+  },
+  {
+    text: "Joseph Smith was known to be a treasure digger and a money-seeker before founding the Church. He was even tried in court in 1826. Given this background, everything he later claimed as religious revelation must be viewed as self-serving deception. A man of such character simply cannot be trusted as a prophet.",
+    category: 'genetic',
+    fallacy: 'genetic',
+    explanation: "The argument judges the truth of Smith's prophetic claims based on his early background rather than evaluating the claims on their own merits — a textbook genetic fallacy."
+  },
+  {
+    text: "Many historians and archaeologists — including non-LDS scholars — have found no archaeological evidence for the great civilizations described in the Book of Mormon: no cities, no coins, no Hebrew inscriptions. When experts from outside the faith consistently reach the same conclusion, we must accept that the evidence does not support the LDS narrative.",
+    category: 'appeal',
+    fallacy: 'ad_verecundiam',
+    explanation: "While scholarly consensus matters, the argument uses expert opinion as a substitute for sustained archaeological argument and ignores ongoing academic debate about what constitutes relevant evidence."
+  },
+  {
+    text: "The early LDS practice of polygamy began when Joseph Smith secretly married other men's wives and teenage girls as young as fourteen. Think of the confusion and hurt experienced by Emma Smith and these families. Any movement that originates in such arrangements and deception cannot be considered divinely inspired.",
+    category: 'appeal',
+    fallacy: 'appeal_emotion',
+    explanation: "The emotional weight of the argument — emphasizing suffering and confusion — is used to reach a theological conclusion without establishing a logical connection between historical circumstances and divine inspiration."
+  },
+  {
+    text: "The Book of Abraham, which Joseph Smith claimed to translate from Egyptian papyri, has been shown by Egyptologists to be a common funerary text. Since scholars have now read those papyri and confirmed they say nothing about Abraham, Smith was demonstrably a false translator — and if he was wrong about that, all his other revelations are equally suspect.",
+    category: 'structural',
+    fallacy: 'slippery_slope',
+    explanation: "Even granting the translation critique, the leap to invalidating all other revelations is not logically established. Each revelation would require independent evaluation rather than blanket dismissal."
+  },
+  {
+    text: "Thousands of people have left the LDS Church after learning its true history. As more and more members study primary sources, the rate of resignation only accelerates. This mass departure by sincere, formerly devoted believers strongly suggests that the Church's truth claims do not hold up under serious scrutiny.",
+    category: 'appeal',
+    fallacy: 'ad_populum',
+    explanation: "The number of people leaving does not determine whether the truth claims are valid. Popular movements away from a position do not constitute evidence against that position — that is the essence of ad populum reasoning."
+  },
+  {
+    text: "Joseph Smith changed the first vision account multiple times between 1832 and 1842. In the earliest account, only Christ appeared; in later accounts, both the Father and Son are described. These contradictions demonstrate that the vision was fabricated and embellished over time as theological and institutional needs changed.",
+    category: 'structural',
+    fallacy: 'begging_question',
+    explanation: "The argument assumes embellishment as the only explanation for variations, rather than examining whether narrative variation is consistent with authentic recollection — it presupposes fabrication to conclude fabrication."
+  },
+  {
+    text: "Critics of the CES Letter often have not read the primary sources themselves but rely on FAIR Mormon or other apologist sites. Of course official Church-adjacent organizations will defend the Church — that's their job. Any response that comes from faithful LDS scholars is automatically suspect because they have a financial and social stake in the outcome.",
+    category: 'genetic',
+    fallacy: 'poisoning_well',
+    explanation: "By preemptively dismissing all responses from faithful scholars as biased, the argument insulates itself from any rebuttal and prevents fair engagement with the actual arguments being made."
+  },
+  {
+    text: "The Kinderhook Plates were presented to Joseph Smith, and he claimed that he translated a portion of them — connecting them to a descendant of Ham. When the plates were later analyzed and found to be 19th-century forgeries, this demonstrated that Smith was willing to 'translate' anything presented to him as ancient.",
+    category: 'scope',
+    fallacy: 'cherry_picking',
+    explanation: "The argument focuses exclusively on the Kinderhook incident while not engaging with the broader body of textual and documentary evidence, using a single episode to reach sweeping conclusions."
+  },
+  {
+    text: "DNA evidence conclusively shows that Native Americans descended from Asian populations who crossed the Bering land bridge — not from Israelites. Since modern science has resolved the question of Native American origins, the Book of Mormon's claims about Israelite migrations to the Americas are simply false.",
+    category: 'structural',
+    fallacy: 'false_dilemma',
+    explanation: "The argument presents only two options — total Book of Mormon literalism or total fabrication — ignoring scholarly proposals about small founding populations, geographical limitations, and what the text itself actually claims about population size and scope."
+  },
+  {
+    text: "Joseph Smith taught in the King Follett discourse that God was once a man and that men may become gods. This teaching flatly contradicts historic Christian doctrine. Since Christianity has held to the nature of God for two millennia, and the majority of Christians worldwide reject LDS theology, that near-universal consensus carries significant weight.",
+    category: 'appeal',
+    fallacy: 'ad_populum',
+    explanation: "The antiquity and popularity of a theological position does not determine its truth. Historic Christian consensus, while notable, does not constitute a logical argument against an alternative theological claim."
+  },
+  {
+    text: "The Book of Mormon was written in King James English — the same style used in Joseph Smith's culture in the 1820s. Ancient scripture handed down through thousands of years to a pre-Columbian civilization would not naturally read like a 17th-century English Bible. The stylistic similarities point to a single 19th-century author.",
+    category: 'causal',
+    fallacy: 'false_cause',
+    explanation: "Stylistic similarity between the KJV and the Book of Mormon is presented as causing the latter — but this ignores the explanatory framework that a translator would naturally use the sacred register of scripture available to him, which was the KJV."
+  },
+  {
+    text: "I was a devoted member for thirty years — served a mission, raised my family in the Church, held leadership callings. When I finally read the CES Letter and the primary sources it cites, I lost my faith entirely. My own personal experience of discovering these things proves that the information the Church withheld is genuinely damaging to faith.",
+    category: 'scope',
+    fallacy: 'anecdotal',
+    explanation: "A single personal faith journey — however sincere — cannot serve as systematic evidence for the veracity of the historical claims being made. Personal experience proves an emotional effect, not the underlying historical truth."
+  }
+];
+
+const RANKS = [
+  { name: 'Novice Inquirer', icon: '📖', min: 0 },
+  { name: 'Sophomore', icon: '✏️', min: 30 },
+  { name: 'Rhetorician', icon: '🗣️', min: 75 },
+  { name: 'Dialectician', icon: '⚖️', min: 150 },
+  { name: 'Logician', icon: '🔍', min: 250 },
+  { name: 'Philosopher', icon: '🏛️', min: 375 },
+  { name: 'Academician', icon: '🎓', min: 500 },
+  { name: 'Sophist-Slayer', icon: '⚔️', min: 650 },
+  { name: 'Peripatetic', icon: '🌿', min: 800 },
+  { name: 'Socrates', icon: '🦉', min: 1000 },
+];
+
+// ══════════════════════════════════════════════
+// GAME STATE
+// ══════════════════════════════════════════════
+
+let state = {
+  players: [],
+  currentPlayer: 0,
+  roundIndex: 0,
+  shuffledExcerpts: [],
+  totalRounds: 12,
+  timerEnabled: false,
+  timerInterval: null,
+  timerSeconds: 30,
+  currentTier: 1, // 1=category, 2=fallacy, 3=explanation
+  tierResults: [], // per round: [{tier1, tier2, tier3, timerBonus}]
+  currentRoundResult: { tier1: null, tier2: null, tier3: null, timerBonus: 0 },
+  missStreak: 0, // consecutive tier misses
+  successStreak: 0, // consecutive tier successes (for grading mode)
+  partialStreak: 0, // consecutive partial credits
+  gradingMode: 'lenient', // lenient | strict | partial
+  successCount: 0,
+  difficulty: 'normal',
+  recapData: []
+};
+
+// ══════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function getRank(score) {
+  let rank = RANKS[0];
+  for (const r of RANKS) {
+    if (score >= r.min) rank = r;
+    else break;
+  }
+  return rank;
+}
+
+function getCategoryById(id) { return CATEGORIES.find(c => c.id === id); }
+function getFallacyById(catId, fallId) {
+  const cat = getCategoryById(catId);
+  if (!cat) return null;
+  return cat.fallacies.find(f => f.id === fallId);
+}
+
+function getPlayerScore() {
+  return state.players[state.currentPlayer]?.score || 0;
+}
+
+function addScore(pts) {
+  state.players[state.currentPlayer].score += pts;
+  updateHeaderScore();
+  showPointsPopup(pts);
+}
+
+function updateHeaderScore() {
+  const total = state.players.reduce((s, p) => s + p.score, 0);
+  document.getElementById('headerScoreVal').textContent = state.players.length === 1
+    ? state.players[0].score
+    : state.players[state.currentPlayer].score;
+  const rank = getRank(state.players[state.currentPlayer].score);
+  document.getElementById('rankBadgeBtn').textContent = rank.icon + ' ' + rank.name;
+}
+
+// ══════════════════════════════════════════════
+// LEADERBOARD
+// ══════════════════════════════════════════════
+
+function loadLeaderboard() {
+  try { return JSON.parse(localStorage.getItem('logos_leaderboard') || '[]'); }
+  catch { return []; }
+}
+
+function saveLeaderboard(entries) {
+  localStorage.setItem('logos_leaderboard', JSON.stringify(entries));
+}
+
+function updateLeaderboard(name, score) {
+  const lb = loadLeaderboard();
+  const existing = lb.find(e => e.name.toLowerCase() === name.toLowerCase());
+  if (existing) {
+    if (score > existing.score) existing.score = score;
+  } else {
+    lb.push({ name, score });
+  }
+  lb.sort((a, b) => b.score - a.score);
+  saveLeaderboard(lb.slice(0, 10));
+}
+
+function renderLeaderboard() {
+  const lb = loadLeaderboard();
+  const el = document.getElementById('leaderboardList');
+  if (!lb.length) {
+    el.innerHTML = '<em style="color:var(--slate-light); font-size:0.85rem;">No entries yet — be the first to earn your place.</em>';
+    return;
+  }
+  el.innerHTML = lb.slice(0, 6).map((e, i) => {
+    const rank = getRank(e.score);
+    return `<div class="lb-row">
+      <span class="lb-rank">${['Ⅰ','Ⅱ','Ⅲ','Ⅳ','Ⅴ','Ⅵ'][i]}</span>
+      <span class="lb-name">${e.name}</span>
+      <span class="lb-score">${e.score}</span>
+      <span class="lb-badge">${rank.icon} ${rank.name}</span>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+// GAME INIT
+// ══════════════════════════════════════════════
+
+function startGame() {
+  const p1 = document.getElementById('player1Name').value.trim();
+  if (!p1) {
+    document.getElementById('player1Name').focus();
+    document.getElementById('player1Name').style.borderColor = 'var(--red-err)';
+    return;
+  }
+
+  const names = [p1,
+    document.getElementById('player2Name').value.trim(),
+    document.getElementById('player3Name').value.trim()
+  ].filter(Boolean);
+
+  state.players = names.map(n => ({ name: n, score: 0 }));
+  state.timerEnabled = document.getElementById('timerToggle').checked;
+  state.currentPlayer = 0;
+  state.roundIndex = 0;
+  state.shuffledExcerpts = shuffle(EXCERPTS).slice(0, state.totalRounds);
+  state.tierResults = [];
+  state.recapData = [];
+  state.missStreak = 0;
+  state.successStreak = 0;
+  state.gradingMode = 'lenient';
+  state.successCount = 0;
+
+  showScreen('screenGame');
+  document.getElementById('headerScore').style.display = '';
+  document.getElementById('rankBadgeBtn').style.display = '';
+  renderPlayerScores();
+  loadRound();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// ROUND LOGIC
+// ══════════════════════════════════════════════
+
+function loadRound() {
+  if (state.roundIndex >= state.shuffledExcerpts.length) {
+    endGame();
+    return;
+  }
+
+  const excerpt = state.shuffledExcerpts[state.roundIndex];
+  state.currentTier = 1;
+  state.currentRoundResult = { tier1: null, tier2: null, tier3: null, timerBonus: 0, tierMisses: 0 };
+
+  document.getElementById('excerptText').textContent = excerpt.text;
+  document.getElementById('progressText').textContent = `Round ${state.roundIndex + 1} of ${state.shuffledExcerpts.length}`;
+  document.getElementById('nextRoundBtn').style.display = 'none';
+
+  updateTierProgress();
+  renderStreakBar();
+  renderTier1();
+
+  if (state.timerEnabled) startTimer();
+}
+
+function renderPlayerScores() {
+  const el = document.getElementById('playersScores');
+  el.innerHTML = state.players.map((p, i) => {
+    const active = i === state.currentPlayer ? 'active-player' : '';
+    return `<div class="player-score-card ${active}">
+      <div class="ps-name">${p.name}</div>
+      <div class="ps-score">${p.score}</div>
+    </div>`;
+  }).join('');
+}
+
+function updateTierProgress() {
+  ['tierStep1','tierStep2','tierStep3'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    el.className = 'tier-step';
+    if (i + 1 < state.currentTier) el.classList.add('completed');
+    else if (i + 1 === state.currentTier) el.classList.add('current');
+  });
+  const tb = document.getElementById('timerBonus');
+  if (state.timerEnabled) { tb.style.display = ''; }
+  else { tb.style.display = 'none'; }
+}
+
+function renderStreakBar() {
+  const bar = document.getElementById('streakBar');
+  bar.innerHTML = Array(5).fill(0).map((_, i) => {
+    let cls = 'streak-dot';
+    if (i < state.missStreak) cls += ' miss';
+    return `<div class="${cls}"></div>`;
+  }).join('') + `<span style="font-family:'Cinzel',serif;font-size:0.6rem;color:var(--brass-dark);margin-left:8px;letter-spacing:0.1em;">${state.missStreak >= 3 ? '⚠ Difficulty Adjusting' : 'Consecutive Misses'}</span>`;
+}
+
+// ══════════════════════════════════════════════
+// TIMER
+// ══════════════════════════════════════════════
+
+function startTimer() {
+  clearTimer();
+  state.timerSeconds = 30;
+  const display = document.getElementById('timerDisplay');
+  display.style.display = '';
+  display.classList.remove('urgent');
+  display.textContent = '0:30';
+
+  state.timerInterval = setInterval(() => {
+    state.timerSeconds--;
+    const s = state.timerSeconds;
+    display.textContent = `0:${s < 10 ? '0' + s : s}`;
+    if (s <= 10) display.classList.add('urgent');
+    if (s <= 0) {
+      clearTimer();
+      display.textContent = '0:00';
+    }
+  }, 1000);
+}
+
+function clearTimer() {
+  if (state.timerInterval) { clearInterval(state.timerInterval); state.timerInterval = null; }
+}
+
+function checkTimerBonus() {
+  if (state.timerEnabled && state.timerSeconds > 0) {
+    return 10;
+  }
+  return 0;
+}
+
+// ══════════════════════════════════════════════
+// TIER 1 — CATEGORY
+// ══════════════════════════════════════════════
+
+function renderTier1() {
+  const excerpt = state.shuffledExcerpts[state.roundIndex];
+  const shuffledCats = shuffle(CATEGORIES);
+
+  document.getElementById('questionArea').innerHTML = `
+    <div class="question-prompt">Tier I — Genus: Select the category of fallacy</div>
+    <div class="category-grid" id="categoryGrid">
+      ${shuffledCats.map(cat => `
+        <button class="category-btn" id="catBtn_${cat.id}" onclick="selectCategory('${cat.id}', '${excerpt.category}')">
+          <span class="cat-icon">${cat.icon}</span>
+          <div class="cat-text">
+            <span class="cat-name">${cat.name}</span>
+            <span class="cat-desc">${cat.desc}</span>
+          </div>
+          <button onclick="event.stopPropagation(); showCategoryModal('${cat.id}')" 
+            style="background:none;border:none;color:var(--brass-dark);font-size:0.8rem;cursor:pointer;padding:2px 4px;flex-shrink:0;" title="Learn more">ℹ</button>
+        </button>`).join('')}
+    </div>
+  `;
+}
+
+function selectCategory(selected, correct) {
+  const isCorrect = selected === correct;
+  const timerBonus = isCorrect ? checkTimerBonus() : 0;
+  clearTimer();
+
+  document.querySelectorAll('.category-btn').forEach(b => {
+    b.style.pointerEvents = 'none';
+    const id = b.id.replace('catBtn_', '');
+    if (id === correct) b.classList.add('correct');
+    else if (id === selected && !isCorrect) b.classList.add('wrong');
+  });
+
+  if (isCorrect) {
+    const pts = 5 + timerBonus;
+    addScore(pts);
+    state.currentRoundResult.tier1 = { correct: true, selected, pts };
+    state.currentRoundResult.timerBonus += timerBonus;
+    state.missStreak = 0;
+    state.successStreak++;
+    setTimeout(() => {
+      showCelebration('🏷️', 'Genus Identified!', `You correctly identified the category. +${pts} points`, () => {
+        state.currentTier = 2;
+        updateTierProgress();
+        renderTier2();
+        if (state.timerEnabled) startTimer();
+      });
+    }, 600);
+  } else {
+    state.currentRoundResult.tier1 = { correct: false, selected, pts: 0 };
+    state.missStreak++;
+    state.successStreak = 0;
+    renderStreakBar();
+    if (state.missStreak >= 3) { state.missStreak = 0; }
+    setTimeout(() => {
+      state.currentTier = 2;
+      updateTierProgress();
+      renderTier2();
+      if (state.timerEnabled) startTimer();
+    }, 1200);
+  }
+}
+
+// ══════════════════════════════════════════════
+// TIER 2 — FALLACY
+// ══════════════════════════════════════════════
+
+function renderTier2() {
+  const excerpt = state.shuffledExcerpts[state.roundIndex];
+
+  // Gather fallacies: correct category + 1-2 from others
+  const correctCat = getCategoryById(excerpt.category);
+  const otherFallacies = CATEGORIES
+    .filter(c => c.id !== excerpt.category)
+    .flatMap(c => c.fallacies)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 3);
+
+  const pool = shuffle([...correctCat.fallacies, ...otherFallacies]).slice(0, 6);
+  // ensure correct fallacy in pool
+  if (!pool.find(f => f.id === excerpt.fallacy)) {
+    pool[0] = correctCat.fallacies.find(f => f.id === excerpt.fallacy);
+  }
+  const shuffledPool = shuffle(pool);
+
+  document.getElementById('questionArea').innerHTML = `
+    <div class="question-prompt">Tier II — Species: Identify the specific fallacy</div>
+    <div class="fallacy-grid" id="fallacyGrid">
+      ${shuffledPool.map(f => `
+        <button class="fallacy-btn" id="fallBtn_${f.id}" onclick="selectFallacy('${f.id}', '${excerpt.fallacy}')">
+          <span class="fallacy-name">${f.name}
+            <button onclick="event.stopPropagation(); showFallacyModal('${excerpt.category}','${f.id}')"
+              style="background:none;border:none;color:var(--brass-dark);font-size:0.75rem;cursor:pointer;padding:0 4px;vertical-align:middle;">ℹ</button>
+          </span>
+          <span class="fallacy-latin">${f.latin}</span>
+          <div class="fallacy-brief">${f.brief}</div>
+        </button>`).join('')}
+    </div>
+  `;
+}
+
+function selectFallacy(selected, correct) {
+  const isCorrect = selected === correct;
+  const timerBonus = isCorrect ? checkTimerBonus() : 0;
+  clearTimer();
+
+  document.querySelectorAll('.fallacy-btn').forEach(b => {
+    b.style.pointerEvents = 'none';
+    const id = b.id.replace('fallBtn_', '');
+    if (id === correct) b.classList.add('correct');
+    else if (id === selected && !isCorrect) b.classList.add('wrong');
+  });
+
+  if (isCorrect) {
+    const pts = 10 + timerBonus;
+    addScore(pts);
+    state.currentRoundResult.tier2 = { correct: true, selected, pts };
+    state.currentRoundResult.timerBonus += timerBonus;
+    state.missStreak = 0;
+    state.successStreak++;
+    setTimeout(() => {
+      showCelebration('🔬', 'Species Named!', `Precisely identified. +${pts} points — now explain your reasoning.`, () => {
+        state.currentTier = 3;
+        updateTierProgress();
+        renderTier3();
+      });
+    }, 600);
+  } else {
+    state.currentRoundResult.tier2 = { correct: false, selected, pts: 0 };
+    state.missStreak++;
+    state.successStreak = 0;
+    renderStreakBar();
+    if (state.missStreak >= 3) { state.missStreak = 0; }
+    setTimeout(() => {
+      state.currentTier = 3;
+      updateTierProgress();
+      renderTier3();
+    }, 1200);
+  }
+}
+
+// ══════════════════════════════════════════════
+// TIER 3 — EXPLANATION (AI graded)
+// ══════════════════════════════════════════════
+
+function getGradingModeLabel() {
+  switch(state.gradingMode) {
+    case 'lenient': return '<span class="grading-mode-indicator mode-lenient">⚖ Lenient Grading</span>';
+    case 'strict': return '<span class="grading-mode-indicator mode-strict">⚖ Strict Grading</span>';
+    case 'partial': return '<span class="grading-mode-indicator mode-partial">⚖ Partial Credit Mode</span>';
+  }
+}
+
+function renderTier3() {
+  const excerpt = state.shuffledExcerpts[state.roundIndex];
+  const fallacy = getFallacyById(excerpt.category, excerpt.fallacy);
+
+  document.getElementById('questionArea').innerHTML = `
+    <div class="explanation-area">
+      ${getGradingModeLabel()}
+      <div class="question-prompt">Tier III — Logos: Explain why this is a logical fallacy</div>
+      <div class="explanation-prompt">
+        In your own words, describe precisely what logical error is being committed in the excerpt above. 
+        Reference the fallacy <em>${fallacy ? fallacy.name : ''}</em> and explain what makes it fallacious — not just that it is one.
+      </div>
+      <textarea class="explanation-textarea" id="explanationInput" placeholder="Write your explanation here... Be as specific as possible about the logical error."></textarea>
+      <div style="margin-top:12px; display:flex; justify-content:space-between; align-items:center;">
+        <div class="loading-indicator" id="loadingIndicator" style="display:none">
+          <span>The Academy considers your argument</span>
+          <div class="loading-dots"><span></span><span></span><span></span></div>
+        </div>
+        <div></div>
+        <button class="btn btn-primary btn-sm" onclick="submitExplanation()">Submit to the Academy →</button>
+      </div>
+      <div id="explanationFeedback" style="margin-top:12px;"></div>
+    </div>
+  `;
+}
+
+async function submitExplanation() {
+  const input = document.getElementById('explanationInput').value.trim();
+  if (input.length < 20) {
+    document.getElementById('explanationFeedback').innerHTML = 
+      '<div class="feedback-box wrong"><div class="feedback-title">Too Brief</div>Please write a more complete explanation.</div>';
+    return;
+  }
+
+  const excerpt = state.shuffledExcerpts[state.roundIndex];
+  const fallacy = getFallacyById(excerpt.category, excerpt.fallacy);
+  const category = getCategoryById(excerpt.category);
+
+  document.getElementById('loadingIndicator').style.display = 'flex';
+  document.querySelector('#questionArea .btn-primary').disabled = true;
+
+  const gradingInstructions = {
+    lenient: "Be encouraging and give full credit (score: 'full') if the student shows any genuine understanding of the fallacy type, even if their explanation is incomplete. Only give partial (score: 'partial') if they are clearly confused. Be warm and supportive.",
+    strict: "Be academically rigorous. Give full credit (score: 'full') only if the explanation precisely identifies the logical error with specificity. Give partial credit (score: 'partial') for explanations that identify the fallacy but lack precision. Give no credit (score: 'none') for vague or incorrect explanations.",
+    partial: "Give partial credit (score: 'partial') for most reasonable attempts. Be fair but note what could be stronger. Give full credit (score: 'full') only for excellent explanations. Give no credit (score: 'none') for clearly wrong explanations."
+  };
+
+  const systemPrompt = `You are an academic logic professor grading student explanations of logical fallacies. ${gradingInstructions[state.gradingMode]}
+
+Respond ONLY with a valid JSON object — no markdown, no extra text — in this exact format:
+{"score": "full|partial|none", "feedback": "2-3 sentence feedback to the student", "ideal": "One sentence ideal explanation"}`;
+
+  const userPrompt = `The argument being analyzed:
+"${excerpt.text}"
+
+The correct fallacy is: ${fallacy ? fallacy.name : ''} (${category ? category.name : ''})
+The correct explanation: ${excerpt.explanation}
+
+Student's explanation:
+"${input}"
+
+Grade this explanation.`;
+
+  try {
+    const response = await fetch("/api/claude", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 500,
+        system: systemPrompt,
+        messages: [{ role: "user", content: userPrompt }]
+      })
+    });
+
+    const data = await response.json();
+    const text = data.content?.[0]?.text || '{}';
+    let result;
+    try { result = JSON.parse(text.replace(/```json|```/g,'').trim()); }
+    catch { result = { score: 'none', feedback: 'Unable to grade — please try again.', ideal: '' }; }
+
+    document.getElementById('loadingIndicator').style.display = 'none';
+
+    let pts = 0;
+    let feedbackClass = 'wrong';
+    let feedbackTitle = 'Insufficient';
+
+    if (result.score === 'full') {
+      pts = 20;
+      feedbackClass = 'correct';
+      feedbackTitle = '✦ Well Argued';
+      state.successStreak++;
+      state.partialStreak = 0;
+      state.successCount++;
+      // Grading mode progression
+      if (state.gradingMode === 'lenient' && state.successCount >= 3) {
+        state.gradingMode = 'strict';
+        state.successCount = 0;
+      }
+    } else if (result.score === 'partial') {
+      pts = 10;
+      feedbackClass = 'partial';
+      feedbackTitle = '◈ Partial Credit';
+      state.partialStreak++;
+      state.successStreak = 0;
+      if (state.gradingMode === 'strict' && state.partialStreak >= 3) {
+        state.gradingMode = 'lenient';
+        state.partialStreak = 0;
+        state.successCount = 0;
+      }
+    } else {
+      pts = 0;
+      feedbackClass = 'wrong';
+      feedbackTitle = '✗ Insufficient';
+      state.successStreak = 0;
+      state.partialStreak = 0;
+    }
+
+    if (pts > 0) addScore(pts);
+
+    state.currentRoundResult.tier3 = {
+      correct: result.score !== 'none',
+      score: result.score,
+      pts,
+      userAnswer: input,
+      feedback: result.feedback,
+      ideal: result.ideal
+    };
+
+    document.getElementById('explanationFeedback').innerHTML = `
+      <div class="feedback-box ${feedbackClass}">
+        <div class="feedback-title">${feedbackTitle}${pts > 0 ? ` — +${pts} points` : ''}</div>
+        <div>${result.feedback}</div>
+        ${result.ideal ? `<div style="margin-top:8px; font-style:italic; color:var(--cream-dark); font-size:0.88rem;">Ideal: ${result.ideal}</div>` : ''}
+      </div>
+    `;
+
+    document.querySelector('#questionArea .btn-primary').disabled = true;
+    document.getElementById('explanationInput').disabled = true;
+
+    // Show next button
+    document.getElementById('nextRoundBtn').style.display = '';
+
+    // Record recap
+    state.recapData.push({
+      roundNum: state.roundIndex + 1,
+      excerpt: state.shuffledExcerpts[state.roundIndex].text,
+      category: category?.name || '',
+      fallacy: fallacy?.name || '',
+      result: { ...state.currentRoundResult }
+    });
+
+    if (result.score === 'full') {
+      setTimeout(() => {
+        showCelebration('📜', 'Logos Mastered!', `${result.feedback.slice(0,80)}... +${pts} points`, () => {});
+        spawnConfetti();
+      }, 400);
+    }
+
+  } catch(err) {
+    document.getElementById('loadingIndicator').style.display = 'none';
+    document.getElementById('explanationFeedback').innerHTML =
+      '<div class="feedback-box wrong"><div class="feedback-title">Error</div>Could not reach the Academy. Check your connection and try again.</div>';
+    document.querySelector('#questionArea .btn-primary').disabled = false;
+  }
+}
+
+// ══════════════════════════════════════════════
+// NEXT ROUND
+// ══════════════════════════════════════════════
+
+function nextRound() {
+  clearTimer();
+  document.getElementById('timerDisplay').style.display = 'none';
+
+  // Rotate player
+  if (state.players.length > 1) {
+    state.currentPlayer = (state.currentPlayer + 1) % state.players.length;
+    renderPlayerScores();
+    updateHeaderScore();
+  }
+
+  state.roundIndex++;
+  if (state.roundIndex >= state.shuffledExcerpts.length) {
+    endGame();
+  } else {
+    loadRound();
+  }
+}
+
+// ══════════════════════════════════════════════
+// END GAME
+// ══════════════════════════════════════════════
+
+function endGame() {
+  clearTimer();
+  state.players.forEach(p => updateLeaderboard(p.name, p.score));
+
+  showScreen('screenRecap');
+  document.getElementById('headerScore').style.display = 'none';
+
+  // Final scores
+  const maxScore = Math.max(...state.players.map(p => p.score));
+  document.getElementById('finalScores').innerHTML = state.players.map(p => {
+    const rank = getRank(p.score);
+    const winner = p.score === maxScore ? 'winner' : '';
+    return `<div class="final-score-card ${winner}">
+      ${winner ? '<div style="font-size:0.7rem;color:var(--brass);font-family:Cinzel,serif;letter-spacing:0.1em;margin-bottom:4px;">⭐ WINNER</div>' : ''}
+      <div class="fsc-name">${p.name}</div>
+      <div class="fsc-score">${p.score}</div>
+      <div class="fsc-rank">${rank.icon} ${rank.name}</div>
+    </div>`;
+  }).join('');
+
+  // Recap rounds
+  const recapEl = document.getElementById('recapRounds');
+  recapEl.innerHTML = state.recapData.map(r => {
+    const t1 = r.result.tier1;
+    const t2 = r.result.tier2;
+    const t3 = r.result.tier3;
+
+    return `<div class="recap-round">
+      <div class="recap-round-num">Round ${r.roundNum} · ${r.category} → ${r.fallacy}</div>
+      <div class="recap-excerpt">"${r.excerpt.length > 200 ? r.excerpt.slice(0,200)+'…' : r.excerpt}"</div>
+      <div class="recap-answers">
+        <div class="recap-answer ${t1?.correct ? 'got-it' : 'missed'}">
+          <div class="recap-answer-label">Tier I — Category</div>
+          <div class="recap-answer-val">${t1?.correct ? '✓ ' + r.category : '✗ ' + (getCategoryById(t1?.selected)?.name || '—')}</div>
+        </div>
+        <div class="recap-answer ${t2?.correct ? 'got-it' : 'missed'}">
+          <div class="recap-answer-label">Tier II — Fallacy</div>
+          <div class="recap-answer-val">${t2?.correct ? '✓ ' + r.fallacy : '✗ Incorrect'}</div>
+        </div>
+        <div class="recap-answer ${t3?.score === 'full' ? 'got-it' : t3?.score === 'partial' ? 'partial' : 'missed'}">
+          <div class="recap-answer-label">Tier III — Explanation</div>
+          <div class="recap-answer-val" style="font-size:0.75rem;">${t3?.score === 'full' ? '✓ Full credit' : t3?.score === 'partial' ? '◈ Partial' : '✗ —'}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  spawnConfetti();
+}
+
+function goHome() {
+  showScreen('screenWelcome');
+  renderLeaderboard();
+  document.getElementById('headerScore').style.display = 'none';
+  document.getElementById('rankBadgeBtn').style.display = 'none';
+}
+
+// ══════════════════════════════════════════════
+// MODALS
+// ══════════════════════════════════════════════
+
+function showCategoryModal(catId) {
+  const cat = getCategoryById(catId);
+  if (!cat) return;
+  document.getElementById('modalContent').innerHTML = `
+    <h3>${cat.icon} ${cat.name}</h3>
+    <p class="modal-latin">A category of informal logical fallacies</p>
+    <p>${cat.desc}. This category encompasses arguments where the <em>form</em> of reasoning is flawed in a specific, identifiable way rooted in ${cat.name.toLowerCase()}.</p>
+    <hr style="border-color:rgba(184,149,58,0.2);margin:14px 0;">
+    <p style="font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.15em;color:var(--brass-dark);margin-bottom:10px;">FALLACIES IN THIS CATEGORY:</p>
+    ${cat.fallacies.map(f => `<div style="margin-bottom:10px;padding:10px 12px;background:rgba(26,30,40,0.5);border-radius:3px;border-left:2px solid var(--brass-dark);">
+      <strong style="font-family:'Cinzel',serif;font-size:0.78rem;color:var(--cream);">${f.name}</strong>
+      <em style="display:block;font-size:0.75rem;color:var(--brass-dark);">${f.latin}</em>
+      <span style="font-size:0.82rem;color:var(--cream-dark);">${f.brief}</span>
+    </div>`).join('')}
+  `;
+  document.getElementById('modalOverlay').style.display = 'flex';
+}
+
+function showFallacyModal(catId, fallId) {
+  const fallacy = getFallacyById(catId, fallId);
+  if (!fallacy) return;
+  const cat = getCategoryById(catId);
+  document.getElementById('modalContent').innerHTML = `
+    <h3>${fallacy.name}</h3>
+    <p class="modal-latin">${fallacy.latin} · ${cat?.name}</p>
+    <p>${fallacy.brief}</p>
+    <hr style="border-color:rgba(184,149,58,0.2);margin:14px 0;">
+    <p><strong style="color:var(--brass);">How to spot it:</strong> Look for arguments where ${fallacy.brief.toLowerCase().replace(/^[a-z]/, c => c.toLowerCase())}.</p>
+    <p><strong style="color:var(--brass);">Why it fails:</strong> This form of argument does not constitute valid logical inference because the premise does not logically necessitate the conclusion — the reasoning bypasses the actual question of truth or validity.</p>
+  `;
+  document.getElementById('modalOverlay').style.display = 'flex';
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modalOverlay')) {
+    document.getElementById('modalOverlay').style.display = 'none';
+  }
+}
+
+function showRanksModal() {
+  const currentScore = state.players[state.currentPlayer]?.score || 0;
+  document.getElementById('ranksGrid').innerHTML = RANKS.map(r => {
+    const current = getRank(currentScore).name === r.name ? 'border-color:var(--brass);background:rgba(184,149,58,0.1);' : '';
+    return `<div class="rank-item" style="${current}">
+      <span class="rank-icon">${r.icon}</span>
+      <div>
+        <span class="rank-name">${r.name}</span>
+        <span class="rank-pts">${r.min}+ points</span>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('ranksOverlay').style.display = 'flex';
+}
+
+function closeRanksModal(e) {
+  if (!e || e.target === document.getElementById('ranksOverlay')) {
+    document.getElementById('ranksOverlay').style.display = 'none';
+  }
+}
+
+// ══════════════════════════════════════════════
+// CELEBRATION & CONFETTI
+// ══════════════════════════════════════════════
+
+let celebrationCallback = null;
+
+function showCelebration(icon, title, message, callback) {
+  celebrationCallback = callback;
+  document.getElementById('celebIcon').textContent = icon;
+  document.getElementById('celebTitle').textContent = title;
+  document.getElementById('celebMessage').textContent = message;
+  document.getElementById('celebrationOverlay').style.display = 'flex';
+}
+
+function closeCelebration() {
+  document.getElementById('celebrationOverlay').style.display = 'none';
+  if (celebrationCallback) { celebrationCallback(); celebrationCallback = null; }
+}
+
+function showPointsPopup(pts) {
+  const popup = document.createElement('div');
+  popup.className = 'points-popup';
+  popup.textContent = `+${pts}`;
+  popup.style.left = (Math.random() * 60 + 20) + '%';
+  popup.style.top = '30%';
+  document.body.appendChild(popup);
+  setTimeout(() => popup.remove(), 1600);
+}
+
+function spawnConfetti() {
+  const container = document.getElementById('confettiContainer');
+  const colors = ['#b8953a','#d4ad52','#e8d08a','#f0e8d0','#2c3140','#ffffff'];
+  for (let i = 0; i < 60; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    piece.style.cssText = `
+      left: ${Math.random() * 100}%;
+      background: ${colors[Math.floor(Math.random() * colors.length)]};
+      border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
+      animation-duration: ${2 + Math.random() * 2}s;
+      animation-delay: ${Math.random() * 0.8}s;
+      width: ${4 + Math.random() * 8}px;
+      height: ${4 + Math.random() * 8}px;
+    `;
+    container.appendChild(piece);
+    setTimeout(() => piece.remove(), 4000);
+  }
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+
+renderLeaderboard();
+</script>
+</body>
+</html>
