@@ -1,6 +1,6 @@
-{
+Here it is:
+json{
   "version": 2,
-  "name": "logos-fallacies-game",
   "builds": [
     {
       "src": "public/index.html",
@@ -21,9 +21,6 @@
       "dest": "/public/$1"
     }
   ],
-  "env": {
-    "ANTHROPIC_API_KEY": "@anthropic_api_key"
-  },
   "headers": [
     {
       "source": "/api/(.*)",
@@ -43,4 +40,3 @@
     }
   ]
 }
-
