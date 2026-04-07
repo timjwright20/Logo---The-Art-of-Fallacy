@@ -24,16 +24,27 @@ export default async function handler(req, res) {
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
+
+  // Detailed key diagnostics â€” helps pinpoint Vercel env var issues
   if (!apiKey) {
+    const allKeys = Object.keys(process.env).filter(k => k.includes('ANTHROPIC'));
     return res.status(500).json({
-      error: 'Server configuration error: API key not found.',
-      hint: 'Add ANTHROPIC_API_KEY to your Vercel Environment Variables.'
+      error: 'API key not found.',
+      hint: 'Add ANTHROPIC_API_KEY in Vercel â†’ Project Settings â†’ Environment Variables, then redeploy.',
+      foundRelatedVars: allKeys.length ? allKeys : 'none',
     });
   }
 
-  // req.body is already parsed by Vercel when bodyParser: true
-  // but guard against it being undefined just in case
-  const body = req.body || {};
+  // Parse body â€” Vercel bodyParser should handle this, but guard against edge cases
+  let body = req.body;
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch(e) {
+      return res.status(400).json({ error: 'Invalid JSON body' });
+    }
+  }
+  if (!body || typeof body !== 'object') {
+    return res.status(400).json({ error: 'Empty or invalid request body' });
+  }
 
   try {
     const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
@@ -50,7 +61,7 @@ export default async function handler(req, res) {
     return res.status(anthropicResponse.status).json(data);
 
   } catch (error) {
-    console.error('Error proxying to Anthropic API:', error);
+    console.error('Proxy error:', error);
     return res.status(500).json({
       error: 'Failed to reach the Anthropic API.',
       details: error.message,
