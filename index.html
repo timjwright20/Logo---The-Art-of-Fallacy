@@ -218,12 +218,15 @@
     font-family: 'Cinzel', serif;
     font-size: 1rem;
     color: var(--brass-dark);
-    width: 70px;
+    width: 138px;
+    flex-shrink: 0;
     letter-spacing: 0.1em;
+    padding-right: 8px;
   }
 
   .player-input {
     flex: 1;
+    min-width: 0;
     background: rgba(26,30,40,0.8);
     border: var(--border);
     border-radius: 3px;
@@ -670,6 +673,9 @@
     cursor: pointer;
     transition: all 0.2s;
     text-align: left;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
   }
 
   .fallacy-btn:hover {
@@ -1336,7 +1342,7 @@
           <span class="tier-desc">Explain the error in writing</span>
         </div>
       </div>
-      <div style="margin-top:14px; font-size:0.82rem; color:var(--slate-light); font-style:italic;">
+      <div style="margin-top:14px; font-size:1.07rem; color:var(--slate-light); font-style:italic;">
         ✦ Enable the timer for +10 bonus points per tier · Three misses on a tier returns you to easier difficulty
       </div>
     </div>
@@ -2009,16 +2015,16 @@ function renderTier2() {
         const catId = fallacyCatMap[f.id] || excerpt.category;
         return `
         <button class="fallacy-btn" id="fallBtn_${f.id}" onclick="selectFallacy('${f.id}', '${excerpt.fallacy}')">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+          <div style="flex:1;">
             <span class="fallacy-name">${f.name}</span>
-            <button onclick="event.stopPropagation(); showFallacyModal('${catId}','${f.id}')"
-              style="background:rgba(184,149,58,0.12);border:1px solid var(--brass-dark);border-radius:50%;width:28px;height:28px;color:var(--brass);font-size:1rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;"
-              onmouseover="this.style.background='rgba(184,149,58,0.3)'"
-              onmouseout="this.style.background='rgba(184,149,58,0.12)'"
-              title="Learn more about this fallacy">📖</button>
+            <span class="fallacy-latin">${f.latin}</span>
+            <div class="fallacy-brief">${f.brief}</div>
           </div>
-          <span class="fallacy-latin">${f.latin}</span>
-          <div class="fallacy-brief">${f.brief}</div>
+          <button onclick="event.stopPropagation(); showFallacyModal('${catId}','${f.id}')"
+            style="background:rgba(184,149,58,0.12);border:1px solid var(--brass-dark);border-radius:50%;width:28px;height:28px;color:var(--brass);font-size:1rem;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all 0.2s;"
+            onmouseover="this.style.background='rgba(184,149,58,0.3)'"
+            onmouseout="this.style.background='rgba(184,149,58,0.12)'"
+            title="Learn more about this fallacy">📖</button>
         </button>`;
       }).join('')}
     </div>
