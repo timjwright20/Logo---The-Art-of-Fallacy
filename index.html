@@ -2383,6 +2383,7 @@ function spawnConfetti() {
 
 let recognition = null;
 let isRecording = false;
+let confirmedTranscript = ''; // accumulates all isFinal segments — never reset mid-session
 
 function toggleMic() {
   if (isRecording) {
@@ -2396,71 +2397,96 @@ function startMic() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) return;
 
+  const textarea = document.getElementById('explanationInput');
+  const btn = document.getElementById('micBtn');
+  const status = document.getElementById('micStatus');
+
+  // Seed confirmedTranscript with whatever is already typed in the box
+  confirmedTranscript = textarea.value;
+
   recognition = new SpeechRecognition();
   recognition.lang = 'en-US';
   recognition.continuous = true;
   recognition.interimResults = true;
-
-  const textarea = document.getElementById('explanationInput');
-  const btn = document.getElementById('micBtn');
-  const status = document.getElementById('micStatus');
-  const existingText = textarea.value;
+  recognition.maxAlternatives = 1;
 
   recognition.onstart = () => {
     isRecording = true;
-    btn.classList.add('recording');
-    btn.innerHTML = '<span class="mic-icon">⏹️</span> Stop Recording';
-    status.textContent = 'Listening...';
-    status.className = 'mic-status active';
+    if (btn) {
+      btn.classList.add('recording');
+      btn.innerHTML = '<span class="mic-icon">⏹️</span> Stop Recording';
+    }
+    if (status) {
+      status.textContent = 'Listening...';
+      status.className = 'mic-status active';
+    }
   };
 
   recognition.onresult = (event) => {
-    let interimTranscript = '';
-    let finalTranscript = '';
+    // Build interim text only from results not yet finalized
+    let interimText = '';
 
     for (let i = event.resultIndex; i < event.results.length; i++) {
       const transcript = event.results[i][0].transcript;
       if (event.results[i].isFinal) {
-        finalTranscript += transcript;
+        // Append finalized text to our running confirmed string
+        confirmedTranscript += (confirmedTranscript ? ' ' : '') + transcript.trim();
       } else {
-        interimTranscript += transcript;
+        interimText += transcript;
       }
     }
 
-    // Show interim results in the textarea as the user speaks
-    textarea.value = existingText + (existingText && finalTranscript ? ' ' : '') + finalTranscript + interimTranscript;
+    // Display: confirmed (permanent) + interim (greyed-out preview)
+    // We just show combined in the textarea — interim will be replaced on next result
+    const ta = document.getElementById('explanationInput');
+    if (ta) {
+      ta.value = confirmedTranscript + (interimText ? ' ' + interimText : '');
+    }
   };
 
   recognition.onerror = (event) => {
+    // 'no-speech' is harmless — browser just paused, don't stop
+    if (event.error === 'no-speech') return;
     console.error('Speech recognition error:', event.error);
     stopMic();
-    if (status) {
-      status.textContent = event.error === 'not-allowed'
-        ? 'Microphone access denied — please allow mic permissions'
-        : 'Recognition error — please try again';
-      status.className = 'mic-status';
+    const s = document.getElementById('micStatus');
+    if (s) {
+      s.textContent = event.error === 'not-allowed'
+        ? 'Microphone access denied — please allow mic permissions in your browser'
+        : `Recognition error (${event.error}) — please try again`;
+      s.className = 'mic-status';
     }
   };
 
   recognition.onend = () => {
+    // Chrome stops after ~60s of silence — restart automatically if still recording
     if (isRecording) {
-      // Auto-restart if still in recording mode (handles browser cut-off)
-      try { recognition.start(); } catch(e) { stopMic(); }
+      try {
+        recognition.start();
+      } catch(e) {
+        // If restart fails, gracefully stop
+        stopMic();
+      }
     }
   };
 
   try {
     recognition.start();
   } catch(e) {
-    if (status) status.textContent = 'Could not start microphone';
+    if (status) status.textContent = 'Could not start microphone — check browser permissions';
   }
 }
 
 function stopMic() {
   isRecording = false;
   if (recognition) {
-    recognition.stop();
+    try { recognition.stop(); } catch(e) {}
     recognition = null;
+  }
+  // Make sure textarea holds only the confirmed text (strip any dangling interim)
+  const ta = document.getElementById('explanationInput');
+  if (ta && confirmedTranscript) {
+    ta.value = confirmedTranscript;
   }
   const btn = document.getElementById('micBtn');
   const status = document.getElementById('micStatus');
