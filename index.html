@@ -2055,7 +2055,7 @@ Grade this explanation.`;
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-5",
         max_tokens: 500,
         system: systemPrompt,
         messages: [{ role: "user", content: userPrompt }]
@@ -2063,10 +2063,29 @@ Grade this explanation.`;
     });
 
     const data = await response.json();
+
+    // Surface any API-level errors visibly instead of silently failing
+    if (!response.ok || data.error || !data.content) {
+      const errMsg = data.error?.message || data.error || `HTTP ${response.status}`;
+      document.getElementById('loadingIndicator').style.display = 'none';
+      document.getElementById('explanationFeedback').innerHTML =
+        `<div class="feedback-box wrong"><div class="feedback-title">API Error</div>${errMsg} — Check your Vercel API key and model name.</div>`;
+      document.querySelector('#questionArea .btn-primary').disabled = false;
+      return;
+    }
+
     const text = data.content?.[0]?.text || '{}';
     let result;
-    try { result = JSON.parse(text.replace(/```json|```/g,'').trim()); }
-    catch { result = { score: 'none', feedback: 'Unable to grade — please try again.', ideal: '' }; }
+    try {
+      result = JSON.parse(text.replace(/```json|```/g,'').trim());
+    } catch(parseErr) {
+      // If JSON parse fails, show the raw response so we can debug
+      document.getElementById('loadingIndicator').style.display = 'none';
+      document.getElementById('explanationFeedback').innerHTML =
+        `<div class="feedback-box wrong"><div class="feedback-title">Parse Error</div>Claude responded but not in expected format. Raw: ${text.slice(0,200)}</div>`;
+      document.querySelector('#questionArea .btn-primary').disabled = false;
+      return;
+    }
 
     document.getElementById('loadingIndicator').style.display = 'none';
 
